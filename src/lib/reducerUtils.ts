@@ -1,3 +1,9 @@
+import { AnyAction } from 'redux';
+import { getType } from 'typesafe-actions';
+import { AnyAsyncActionCreator } from './types';
+/**
+ * 리팩터링 state의 data 타입을 T로 두며 어떤 타입의 데이터라도 받을 수 있도록 state type을 지정
+ */
 export type AsyncState<T, E = any> = {
     data: T | null;
     loading: boolean;
@@ -30,3 +36,37 @@ export const asyncState = {
         error: error,
     }),
 };
+
+export function createAsyncReducer<
+    S,
+    AC extends AnyAsyncActionCreator,
+    K extends keyof S,
+>(asyncActionCreator: AC, key: K) {
+    return (state: S, action: AnyAction) => {
+        // 각 액션 생성함수의 type 을 추출해줍니다.
+        const [request, success, failure] = [
+            asyncActionCreator.request,
+            asyncActionCreator.success,
+            asyncActionCreator.failure,
+        ].map(getType);
+        switch (action.type) {
+            case request:
+                return {
+                    ...state,
+                    [key]: asyncState.load(),
+                };
+            case success:
+                return {
+                    ...state,
+                    [key]: asyncState.success(action.payload),
+                };
+            case failure:
+                return {
+                    ...state,
+                    [key]: asyncState.error(action.payload),
+                };
+            default:
+                return state;
+        }
+    };
+}
