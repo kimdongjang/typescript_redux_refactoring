@@ -12,8 +12,16 @@ export const GET_USER_PROFILE_ERROR = 'github/GET_USER_PROFILE_ERROR'; // 디스
 // export const getUserProfileSuccess = createStandardAction(GET_USER_PROFILE_SUCCESS)<GithubProfile>();
 // export const getUserProfileError = createStandardAction(GET_USER_PROFILE_ERROR)<AxiosError>();
 
-export const getUserProfileAsync = createAsyncAction(
+// 리팩터링 전
+// export const getUserProfileAsync = createAsyncAction(
+//     GET_USER_PROFILE,
+//     GET_USER_PROFILE_SUCCESS,
+//     GET_USER_PROFILE_ERROR
+//   )<undefined, GithubProfile, AxiosError>();
+
+// 리팩터링 후(액션 생성 함수의 any타입에 넣을 타입을 명시)
+  export const getUserProfileAsync = createAsyncAction(
     GET_USER_PROFILE,
     GET_USER_PROFILE_SUCCESS,
     GET_USER_PROFILE_ERROR
-  )<undefined, GithubProfile, AxiosError>();
+  )<string, GithubProfile, AxiosError>();

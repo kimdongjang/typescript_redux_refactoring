@@ -5,6 +5,15 @@ import { getUserProfile } from '../../api/github';
 import { getUserProfileAsync } from './actions';
 import { AxiosError } from 'axios';
 import { Dispatch } from 'redux';
+import createAsyncThunk from '../../lib/createAsyncThunk';
+
+
+/**
+ * // lib/createAsyncThunk의 리팩터링 함수를 사용
+ * param1 : 액션
+ * param2 : promise를 가지는 비동기 함수
+ */
+export const getUserProfileThunk = createAsyncThunk(getUserProfileAsync, getUserProfile);
 
 /**
  *  TReturnType: thunk 함수에서 반환하는 값의 타입을 설정합니다.
@@ -14,15 +23,15 @@ import { Dispatch } from 'redux';
  * @param username 
  * @returns 
  */
-export function getUserProfileThunk(username: string): ThunkAction<void, RootState, null, GithubAction> {
-    return async (dispatch: Dispatch) => {
-        const { request, success, failure } = getUserProfileAsync;
-        dispatch(request());
-        try {
-            const userProfile = await getUserProfile(username);
-            dispatch(success(userProfile));
-        } catch (e) {
-            dispatch(failure(e as AxiosError));
-        }
-    };
-}
+// export function getUserProfileThunk(username: string): ThunkAction<void, RootState, null, GithubAction> {
+//     return async (dispatch: Dispatch) => {
+//         const { request, success, failure } = getUserProfileAsync;
+//         dispatch(request());
+//         try {
+//             const userProfile = await getUserProfile(username);
+//             dispatch(success(userProfile));
+//         } catch (e) {
+//             dispatch(failure(e as AxiosError));
+//         }
+//     };
+// }
